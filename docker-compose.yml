@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  miner:
+    build: ./miner
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      GITHUB_TOKEN: ${GITHUB_TOKEN}        # leído desde .env automáticamente
+      REPOS_PER_PAGE: 10
+      MAX_FILES_PER_REPO: 20
+      SLEEP_BETWEEN_REPOS: 2
+      SLEEP_BETWEEN_PAGES: 5
+
+  visualizer:
+    build: ./visualizer
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      DEFAULT_TOP_N: 20
+      PORT: 5000
+    ports:
+      - "5000:5000"
