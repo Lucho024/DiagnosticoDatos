@@ -20,10 +20,7 @@ Dashboard en tiempo real que mina las palabras más usadas en nombres de **funci
 | `miner`      | Producer   | Python 3.12          |
 | `visualizer` | Consumer   | Python 3.12 + Flask  |
 
-```bash
-cp .env.example .env
-# Edita .env y reemplaza ghp_tuTokenAqui con tu token real
-```
+
 
 ## Ejecución (un solo comando)
 
